@@ -1,0 +1,7 @@
+openai
+pytest
+requests
+pyyaml
+
+
+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

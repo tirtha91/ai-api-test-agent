@@ -1,0 +1,19 @@
+# Design Notes
+
+## Goal
+Convert OpenAPI → Pytest using AI
+
+## Architecture
+Parser → LLM → Generator → Reviewer
+
+## Challenges Faced
+- Path params handling
+- Invalid base URL
+- Data dependency in APIs
+
+## Achieved
+✅ Avoids fake URLs
+✅ Handles {param} properly
+✅ Understands data dependency (POST → GET)
+✅ Produces runnable tests
+✅ Improves its own output
