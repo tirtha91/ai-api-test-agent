@@ -1,2 +1,18 @@
-# ai-api-test-agent
-AI-powered agent that converts OpenAPI/Swagger specifications into executable Pytest API test scripts with automated generation and refinement using LLMs.
+# AI API Test Generator Agent
+
+## 🚀 What it does
+Converts OpenAPI specs into executable Pytest scripts using AI.
+
+## 🧠 Features
+- Auto test generation
+- Positive & negative cases
+- AI-based code refinement
+
+## ⚙️ Tech Stack
+Python, OpenAI, Pytest
+
+## ▶️ How to run
+...
+
+## 📸 Sample Output
+(screenshot)
