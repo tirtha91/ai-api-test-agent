@@ -2,6 +2,7 @@
 
 ## 🚀 Overview
 AI-powered agent that converts OpenAPI specs into executable Pytest scripts
+Generate → Save → Run pytest → If FAIL → Send error to AI → Fix → Re-run
 
 ## 🧠 Features
 - Auto test generation using LLM
