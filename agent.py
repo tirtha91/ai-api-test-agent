@@ -41,6 +41,8 @@ Instructions:
 - Use clean pytest format
 - Ensure the code is directly executable
 - Do NOT use placeholders like "example.com"
+- Return only valid Python code.
+- Do NOT include markdown formatting like ``` or ```python.
 
 Output only valid Python code.
 """
@@ -78,3 +80,31 @@ Code:
     )
 
     return improved.choices[0].message.content
+
+def fix_failed_test(code, error_output):
+    prompt = f"""
+You are a senior QA automation engineer.
+
+The following pytest test is failing.
+
+Error Output:
+{error_output}
+
+Original Code:
+{code}
+
+Tasks:
+- Fix the test so it passes
+- Correct assertions if needed
+- Fix incorrect URLs or data issues
+- Ensure code is executable
+
+Return ONLY corrected Python code.
+"""
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": prompt}]
+    )
+
+    return response.choices[0].message.content

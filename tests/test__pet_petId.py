@@ -1,51 +1,48 @@
-import requests
 import pytest
+import requests
 
 BASE_URL = "https://petstore.swagger.io/v2"
 
 @pytest.fixture
 def create_pet():
-    # Create pet data for testing
+    # Create a pet for the positive test
     pet_data = {
         "id": 1,
         "name": "Fido",
-        "photoUrls": [],
         "status": "available"
     }
-    # Attempt to create the pet
     response = requests.post(f"{BASE_URL}/pet", json=pet_data)
     # Ensure the pet was created successfully
     assert response.status_code == 200, "Failed to create pet"
-    yield pet_data  # Yield pet data for test
-
-    # Clean up - delete the pet after test
-    requests.delete(f"{BASE_URL}/pet/{pet_data['id']}")
-
-def test_get_pet_by_id_positive(create_pet):
-    # Given a pet ID that exists
-    pet_id = create_pet['id']  # Use ID from the fixture
-
-    # When I request the pet by ID
-    response = requests.get(f"{BASE_URL}/pet/{pet_id}")
-
-    # Then the response status code should be 200
-    assert response.status_code == 200, "Expected status code 200"
+    yield pet_data['id']
     
-    # And the response body should contain expected fields
-    data = response.json()
-    assert data['id'] == pet_id, f"Expected pet ID {pet_id}, got {data['id']}"
-    assert data['name'] == create_pet['name'], f"Expected pet name {create_pet['name']}, got {data['name']}"
-    assert 'status' in data, "Response should contain 'status' field"
+    # Clean up after test if needed (e.g., delete the pet)
+    cleanup_response = requests.delete(f"{BASE_URL}/pet/{pet_data['id']}")
+    assert cleanup_response.status_code == 200, "Failed to delete pet"
 
-def test_get_pet_by_id_negative():
-    # Given a pet ID that does not exist
-    pet_id = 999999  # This ID should not exist
-
-    # When I request the pet by ID
+def test_get_pet_positive(create_pet):
+    # Use the created pet ID for the positive test
+    pet_id = create_pet
     response = requests.get(f"{BASE_URL}/pet/{pet_id}")
-
-    # Then the response status code should be 404
-    assert response.status_code == 404, "Expected status code 404"
     
-    # Optionally, we can also check the response body for error message
-    assert response.json().get('message') == "Pet not found", "Expected error message not found"
+    # Validate status code
+    assert response.status_code == 200, f"Unexpected status code: {response.status_code}"
+
+    # Validate basic response body
+    response_data = response.json()
+    assert response_data.get('id') == pet_id, "Pet ID does not match"
+    assert response_data.get('name') == "Fido", "Pet name does not match"
+    assert response_data.get('status') == "available", "Pet status does not match"
+
+def test_get_pet_negative():
+    # Use a non-existing pet ID for the negative test
+    pet_id = 99999
+    response = requests.get(f"{BASE_URL}/pet/{pet_id}")
+    
+    # Validate status code
+    assert response.status_code == 404, f"Unexpected status code: {response.status_code}"
+
+    # Validate that the response body is as expected for a not found pet
+    response_data = response.json()
+    assert 'message' in response_data, "Expected message key not found in response"
+    assert response_data.get('message') == "Pet not found", "Unexpected message in response"
